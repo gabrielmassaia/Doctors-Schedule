@@ -1,7 +1,10 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Loader2 } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import z from "zod";
 
 import { Button } from "@/components/ui/button";
@@ -21,14 +24,11 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { authClient } from "@/lib/auth-client";
 
 export function LoginForm() {
+  const router = useRouter();
   const loginSchema = z.object({
-    name: z
-      .string()
-      .trim()
-      .min(1, { message: "Nome é obrigatório" })
-      .max(50, { message: "Nome deve conter no máximo 50 caracteres" }),
     email: z
       .string()
       .trim()
@@ -43,14 +43,28 @@ export function LoginForm() {
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      name: "",
       email: "",
       password: "",
     },
   });
 
-  function onSubmit(values: z.infer<typeof loginSchema>) {
-    console.log(values);
+  async function onSubmit(values: z.infer<typeof loginSchema>) {
+    await authClient.signIn.email(
+      {
+        email: values.email,
+        password: values.password,
+      },
+      {
+        onSuccess: () => {
+          toast.success("Login realizado com sucesso");
+          router.push("/dashboard");
+        },
+        onError: (error) => {
+          toast.error("Email ou senha inválidos");
+          console.error(error);
+        },
+      },
+    );
   }
 
   return (
@@ -90,8 +104,16 @@ export function LoginForm() {
               />
             </CardContent>
             <CardFooter>
-              <Button type="submit" className="w-full">
-                Entrar
+              <Button
+                type="submit"
+                className="w-full"
+                disabled={form.formState.isSubmitting}
+              >
+                {form.formState.isSubmitting ? (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                ) : (
+                  "Entrar"
+                )}
               </Button>
             </CardFooter>
           </form>

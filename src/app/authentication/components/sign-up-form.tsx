@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import z from "zod";
 
 import { Button } from "@/components/ui/button";
@@ -64,7 +65,12 @@ export function SignUpForm() {
       },
       {
         onSuccess: () => {
+          toast.success("Conta criada com sucesso");
           router.push("/dashboard");
+        },
+        onError: (error) => {
+          toast.error("Erro ao criar conta");
+          console.error(error);
         },
       },
     );
@@ -129,10 +135,7 @@ export function SignUpForm() {
                 disabled={form.formState.isSubmitting}
               >
                 {form.formState.isSubmitting ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Criando conta...
-                  </>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 ) : (
                   "Criar conta"
                 )}
