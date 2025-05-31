@@ -28,6 +28,7 @@ import { authClient } from "@/lib/auth-client";
 
 export function LoginForm() {
   const router = useRouter();
+
   const loginSchema = z.object({
     email: z
       .string()
