@@ -10,18 +10,18 @@ import { FormClinic } from "./_components/form-clinic";
 
 export default function ClinicFormPage() {
   return (
-    <Dialog open={true}>
-      <form>
+    <div>
+      <Dialog open>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
             <DialogTitle>Adicionar clínica</DialogTitle>
             <DialogDescription>
-              Adicione uma clínica para que você possa gerenciar seus pacientes
+              Adicione uma clínica para continuar.
             </DialogDescription>
           </DialogHeader>
           <FormClinic />
         </DialogContent>
-      </form>
-    </Dialog>
+      </Dialog>
+    </div>
   );
 }
