@@ -19,7 +19,7 @@ export function SignOutButton() {
         })
       }
     >
-      Sign out
+      Sair
     </Button>
   );
 }

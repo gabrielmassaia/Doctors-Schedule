@@ -2,6 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
+import { isRedirectError } from "next/dist/client/components/redirect-error";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import z from "zod";
@@ -38,9 +39,11 @@ export function FormClinic() {
   async function onSubmit(data: z.infer<typeof clinicFormSchema>) {
     try {
       await createClinic(data.name);
-      toast.success("Clínica criada com sucesso");
-      form.reset();
     } catch (error) {
+      if (isRedirectError(error)) {
+        return;
+      }
+
       console.error(error);
       toast.error("Erro ao criar clínica");
     }
