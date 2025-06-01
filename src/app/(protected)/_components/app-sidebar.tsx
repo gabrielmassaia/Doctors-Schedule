@@ -46,7 +46,7 @@ const items = [
     icon: CalendarDays,
   },
   {
-    title: "Médicos",
+    title: "Doutores",
     url: "/doctors",
     icon: Stethoscope,
   },
@@ -108,7 +108,9 @@ export function AppSidebar() {
                     </AvatarFallback>
                   </Avatar>
                   <div>
-                    <p className="text-sm">{session.data?.user.clinic.name}</p>
+                    <p className="text-sm">
+                      {session.data?.user?.clinic?.name}
+                    </p>
                     <p className="text-muted-foreground text-xs">
                       {session.data?.user.email}
                     </p>
@@ -116,10 +118,7 @@ export function AppSidebar() {
                 </SidebarMenuButton>
               </DropdownMenuTrigger>
               <DropdownMenuContent>
-                <DropdownMenuItem
-                  className="cursor-pointer"
-                  onClick={handleSignOut}
-                >
+                <DropdownMenuItem onClick={handleSignOut}>
                   <LogOut />
                   <span>Sair</span>
                 </DropdownMenuItem>
