@@ -6,7 +6,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 
-import { FormClinic } from "./components/form-clinic";
+import { FormClinic } from "./_components/form-clinic";
 
 export default function ClinicFormPage() {
   return (
