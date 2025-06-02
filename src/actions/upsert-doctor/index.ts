@@ -27,17 +27,25 @@ export const upsertDoctor = actionClient
     await db
       .insert(doctorsTable)
       .values({
-        id: parsedInput.id,
         clinicId: session.user.clinic.id,
+        name: parsedInput.name,
+        speciality: parsedInput.specialty,
         availableFromWeekDay: parsedInput.availableFromWeekday,
         availableToWeekDay: parsedInput.availableToWeekday,
-        speciality: parsedInput.specialty,
-        ...parsedInput,
+        availableFromTime: parsedInput.availableFromTime,
+        availableToTime: parsedInput.availableToTime,
+        appointmentPriceInCents: parsedInput.appointmentPriceInCents,
       })
       .onConflictDoUpdate({
         target: [doctorsTable.id],
         set: {
-          ...parsedInput,
+          name: parsedInput.name,
+          speciality: parsedInput.specialty,
+          availableFromWeekDay: parsedInput.availableFromWeekday,
+          availableToWeekDay: parsedInput.availableToWeekday,
+          availableFromTime: parsedInput.availableFromTime,
+          availableToTime: parsedInput.availableToTime,
+          appointmentPriceInCents: parsedInput.appointmentPriceInCents,
         },
       });
   });

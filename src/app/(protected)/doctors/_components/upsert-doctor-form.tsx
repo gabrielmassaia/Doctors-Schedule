@@ -51,7 +51,7 @@ const formSchema = z
       .min(1, { message: "Dia da semana é obrigatório" }),
     availableToWeekday: z
       .string()
-      .min(0, { message: "Dia da semana é obrigatório" }),
+      .min(1, { message: "Dia da semana é obrigatório" }),
     availableFromTime: z
       .string()
       .trim()
@@ -97,6 +97,7 @@ export function UpsertDoctorForm() {
   });
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
+    console.log("values", values);
     upsertDoctorAction.execute({
       ...values,
       availableFromWeekday: parseInt(values.availableFromWeekday),
@@ -107,14 +108,14 @@ export function UpsertDoctorForm() {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Adicionar Doutor</DialogTitle>
-            <DialogDescription>
-              Preencha os campos abaixo para adicionar um novo profissional.
-            </DialogDescription>
-          </DialogHeader>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Adicionar Doutor</DialogTitle>
+          <DialogDescription>
+            Preencha os campos abaixo para adicionar um novo profissional.
+          </DialogDescription>
+        </DialogHeader>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <div className="space-y-4">
             <FormField
               control={form.control}
@@ -379,18 +380,18 @@ export function UpsertDoctorForm() {
                 )}
               />
             </div>
-            <DialogFooter>
-              <Button type="submit" disabled={upsertDoctorAction.isPending}>
-                {upsertDoctorAction.isPending ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                ) : (
-                  "Adicionar"
-                )}
-              </Button>
-            </DialogFooter>
           </div>
-        </DialogContent>
-      </form>
+          <DialogFooter>
+            <Button type="submit" disabled={upsertDoctorAction.isPending}>
+              {upsertDoctorAction.isPending ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                "Salvar"
+              )}
+            </Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
     </Form>
   );
 }

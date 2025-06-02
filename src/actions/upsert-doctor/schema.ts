@@ -13,10 +13,18 @@ export const upsertDoctorSchema = z
       .min(1, { message: "Preço da consulta é obrigatório" }),
     availableFromWeekday: z
       .number()
-      .min(1, { message: "Dia da semana é obrigatório" }),
+      .min(0)
+      .max(6)
+      .refine((val) => val >= 0 && val <= 6, {
+        message: "Dia da semana inválido",
+      }),
     availableToWeekday: z
       .number()
-      .min(0, { message: "Dia da semana é obrigatório" }),
+      .min(0)
+      .max(6)
+      .refine((val) => val >= 0 && val <= 6, {
+        message: "Dia da semana inválido",
+      }),
     availableFromTime: z
       .string()
       .trim()
