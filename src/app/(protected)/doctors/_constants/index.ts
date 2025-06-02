@@ -48,23 +48,19 @@ export enum MedicalSpecialty {
   RADIOTERAPIA = "Radioterapia",
   REUMATOLOGIA = "Reumatologia",
   UROLOGIA = "Urologia",
-}
 
-export enum DentalSpecialty {
-  CIRURGIA_BUCOMAXILOFACIAL = "Cirurgia Bucomaxilofacial",
-  DENTISTICA = "Dentística",
-  DISFUNCAO_TEMPOROMANDIBULAR = "Disfunção Temporomandibular e Dor Orofacial",
+  // Especialidades odontológicas
+  ODONTOLOGIA = "Odontologia",
+  ODONTOLOGIA_ESTETICA = "Odontologia Estética",
+  ORTODONTIA = "Ortodontia",
   ENDODONTIA = "Endodontia",
-  ESTOMATOLOGIA = "Estomatologia",
-  HARMONIZACAO_OROFACIAL = "Harmonização Orofacial",
+  PERIODONTIA = "Periodontia",
   IMPLANTODONTIA = "Implantodontia",
   ODONTOPEDIATRIA = "Odontopediatria",
-  ORTODONTIA = "Ortodontia",
-  ORTOPEDIA_FUNCIONAL = "Ortopedia Funcional dos Maxilares",
-  PERIODONTIA = "Periodontia",
-  PROTESE_DENTARIA = "Prótese Dentária",
+  CIRURGIA_BUCOMAXILOFACIAL = "Cirurgia Bucomaxilofacial",
   RADIOLOGIA_ODONTOLOGICA = "Radiologia Odontológica",
-  SAUDE_COLETIVA = "Saúde Coletiva",
+  DENTISTICA_RESTAURADORA = "Dentística Restauradora",
+  PROTESE_DENTARIA = "Prótese Dentária",
 }
 
 export const medicalSpecialties = Object.entries(MedicalSpecialty).map(
@@ -73,12 +69,3 @@ export const medicalSpecialties = Object.entries(MedicalSpecialty).map(
     label: value,
   }),
 );
-
-export const dentalSpecialties = Object.entries(DentalSpecialty).map(
-  ([key, value]) => ({
-    value: DentalSpecialty[key as keyof typeof DentalSpecialty],
-    label: value,
-  }),
-);
-
-export const allSpecialties = [...medicalSpecialties, ...dentalSpecialties];
