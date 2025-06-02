@@ -46,10 +46,10 @@ const formSchema = z
     appointmentPrice: z
       .number()
       .min(1, { message: "Preço da consulta é obrigatório" }),
-    availableFromWeekday: z
+    availableFromWeekDay: z
       .string()
       .min(1, { message: "Dia da semana é obrigatório" }),
-    availableToWeekday: z
+    availableToWeekDay: z
       .string()
       .min(1, { message: "Dia da semana é obrigatório" }),
     availableFromTime: z
@@ -87,8 +87,8 @@ export function UpsertDoctorForm({ onSuccess, doctor }: UpsertDoctorFormProps) {
       name: "",
       specialty: "",
       appointmentPrice: 0,
-      availableFromWeekday: "1",
-      availableToWeekday: "5",
+      availableFromWeekDay: "1",
+      availableToWeekDay: "5",
       availableFromTime: "08:00",
       availableToTime: "18:00",
     },
@@ -101,17 +101,17 @@ export function UpsertDoctorForm({ onSuccess, doctor }: UpsertDoctorFormProps) {
       toast.success("Doutor salvo com sucesso");
       onSuccess?.();
     },
-    onError: () => {
+    onError: (error) => {
       toast.error("Erro ao salvar doutor");
+      console.error(error);
     },
   });
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
-    console.log("values", values);
     upsertDoctorAction.execute({
       ...values,
-      availableFromWeekday: parseInt(values.availableFromWeekday),
-      availableToWeekday: parseInt(values.availableToWeekday),
+      availableFromWeekDay: parseInt(values.availableFromWeekDay),
+      availableToWeekDay: parseInt(values.availableToWeekDay),
       appointmentPriceInCents: values.appointmentPrice * 100,
     });
   };
@@ -193,7 +193,7 @@ export function UpsertDoctorForm({ onSuccess, doctor }: UpsertDoctorFormProps) {
           <div className="grid grid-cols-2 gap-4">
             <FormField
               control={form.control}
-              name="availableFromWeekday"
+              name="availableFromWeekDay"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Dia inicial de disponibilidade</FormLabel>
@@ -222,7 +222,7 @@ export function UpsertDoctorForm({ onSuccess, doctor }: UpsertDoctorFormProps) {
             />
             <FormField
               control={form.control}
-              name="availableToWeekday"
+              name="availableToWeekDay"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Dia final de disponibilidade</FormLabel>

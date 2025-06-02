@@ -11,14 +11,14 @@ export const upsertDoctorSchema = z
     appointmentPriceInCents: z
       .number()
       .min(1, { message: "Preço da consulta é obrigatório" }),
-    availableFromWeekday: z
+    availableFromWeekDay: z
       .number()
       .min(0)
       .max(6)
       .refine((val) => val >= 0 && val <= 6, {
         message: "Dia da semana inválido",
       }),
-    availableToWeekday: z
+    availableToWeekDay: z
       .number()
       .min(0)
       .max(6)
