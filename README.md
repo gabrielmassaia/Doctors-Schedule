@@ -1,6 +1,6 @@
 # DoctorSchedule
 
-Sistema de agendamento médico desenvolvido com Next.js 14, TypeScript e PostgreSQL.
+Sistema de agendamento médico desenvolvido com Next.js 15, TypeScript e PostgreSQL.
 
 ## Pré-requisitos
 
@@ -70,18 +70,77 @@ pnpm dev
 
 ```
 src/
-  ├── app/                    # Rotas e páginas da aplicação
-  │   ├── api/               # Endpoints da API
-  │   ├── authentication/    # Componentes de autenticação
-  │   └── dashboard/        # Área logada do sistema
-  ├── components/           # Componentes reutilizáveis
-  ├── lib/                  # Configurações e utilitários
-  └── db/                   # Configurações do banco de dados
+  ├── actions/              # Server Actions do Next.js
+  │   ├── auth/            # Ações relacionadas à autenticação
+  │   └── api/             # Ações da API e manipulação de dados
+  │
+  ├── app/                 # Rotas e páginas da aplicação
+  │   ├── api/            # Endpoints da API
+  │   ├── auth/           # Rotas de autenticação
+  │   └── (dashboard)/    # Área protegida do sistema
+  │
+  ├── components/         # Componentes React reutilizáveis
+  │   ├── ui/            # Componentes base da interface
+  │   └── shared/        # Componentes compartilhados
+  │
+  ├── db/                # Configurações do banco de dados
+  │   ├── migrations/    # Migrações do Drizzle
+  │   ├── schema/        # Schemas das tabelas
+  │   └── index.ts      # Configuração do cliente DB
+  │
+  ├── hooks/            # Hooks personalizados React
+  │   ├── auth/         # Hooks de autenticação
+  │   └── form/         # Hooks para formulários
+  │
+  ├── lib/             # Bibliotecas e configurações
+  │   ├── auth/        # Configuração de autenticação
+  │   ├── utils/       # Funções utilitárias
+  │   └── config/      # Configurações gerais
+  │
+  └── _helpers/       # Funções auxiliares e utilitários
 ```
+
+### Detalhamento da Arquitetura
+
+- **actions/**: Contém os Server Actions do Next.js 13+, responsáveis por operações no servidor como manipulação de dados e autenticação.
+
+- **app/**: Implementa o App Router do Next.js, onde cada pasta representa uma rota da aplicação.
+
+  - `api/`: Endpoints da API REST
+  - `auth/`: Páginas e rotas de autenticação
+  - `(dashboard)/`: Grupo de rotas protegidas da aplicação
+
+- **components/**: Componentes React reutilizáveis organizados por domínio
+
+  - `ui/`: Componentes básicos da interface (botões, inputs, etc)
+  - `shared/`: Componentes compartilhados entre diferentes partes da aplicação
+
+- **db/**: Todo o código relacionado ao banco de dados
+  - `migrations/`: Histórico de alterações do banco
+  - `schema/`: Definição das tabelas e relacionamentos
+- **hooks/**: Custom hooks React para reutilização de lógica
+
+  - `auth/`: Hooks relacionados à autenticação
+  - `form/`: Hooks para gerenciamento de formulários
+
+- **lib/**: Configurações e utilitários
+
+  - `auth/`: Configuração do sistema de autenticação
+  - `utils/`: Funções utilitárias gerais
+  - `config/`: Configurações da aplicação
+
+- **\_helpers/**: Funções auxiliares e utilitários compartilhados
+
+### Padrões e Convenções
+
+- Utilizamos o padrão de Server Components por padrão
+- Client Components são identificados com o sufixo 'use client'
+- Cada componente tem seu próprio diretório com arquivos relacionados
+- Seguimos o princípio de Colocation para manter arquivos relacionados próximos
 
 ## Tecnologias Utilizadas
 
-- [Next.js 14](https://nextjs.org/) - Framework React
+- [Next.js 15](https://nextjs.org/) - Framework React
 - [TypeScript](https://www.typescriptlang.org/) - Superset JavaScript
 - [PostgreSQL](https://www.postgresql.org/) - Banco de dados
 - [Drizzle ORM](https://orm.drizzle.team/) - ORM para TypeScript
@@ -89,6 +148,22 @@ src/
 - [Tailwind CSS](https://tailwindcss.com/) - Framework CSS
 - [React Hook Form](https://react-hook-form.com/) - Gerenciamento de formulários
 - [Zod](https://zod.dev/) - Validação de schemas
+- [Radix UI](https://www.radix-ui.com/) - Componentes de interface acessíveis
+- [Lucide React](https://lucide.dev/) - Biblioteca de ícones
+- [Day.js](https://day.js.org/) - Biblioteca para manipulação de datas
+- [Sonner](https://sonner.emilkowal.ski/) - Sistema de notificações toast
+
+## Componentes e Recursos
+
+O projeto inclui diversos componentes pré-configurados:
+
+- Sistema completo de autenticação
+- Temas claro/escuro
+- Componentes de UI acessíveis (Radix UI)
+- Formulários validados com Zod
+- Sistema de notificações toast
+- Formatação de números e datas
+- Componentes de diálogo, menu dropdown, avatar, tabs e tooltips
 
 ## Scripts Disponíveis
 
