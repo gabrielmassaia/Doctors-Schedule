@@ -1,5 +1,6 @@
 import { CalendarIcon, ClockIcon, DollarSignIcon } from "lucide-react";
 
+import { formatCurrencyInCents } from "@/_helpers/currency";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -13,6 +14,8 @@ import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
 import { doctorsTable } from "@/db/schema";
 
+import { getAvailability } from "../_helpers/availability";
+
 interface DoctorCardProps {
   doctor: typeof doctorsTable.$inferSelect;
 }
@@ -22,6 +25,8 @@ export default function DoctorCard({ doctor }: DoctorCardProps) {
     .split(" ")
     .map((name) => name[0])
     .join("");
+  const availability = getAvailability(doctor);
+
   return (
     <Card>
       <CardHeader>
@@ -39,15 +44,16 @@ export default function DoctorCard({ doctor }: DoctorCardProps) {
       <CardContent className="flex flex-col gap-2">
         <Badge variant="outline">
           <CalendarIcon className="mr-1" />
-          Segunda a Quinta
+          {availability.from.format("dddd")} a {availability.to.format("dddd")}
         </Badge>
         <Badge variant="outline">
           <ClockIcon className="mr-1" />
-          {doctor.availableFromTime} - {doctor.availableToTime}
+          {availability.from.format("HH:mm")} as{" "}
+          {availability.to.format("HH:mm")}
         </Badge>
         <Badge variant="outline">
           <DollarSignIcon className="mr-1" />
-          R$ {doctor.appointmentPriceInCents / 100}
+          {formatCurrencyInCents(doctor.appointmentPriceInCents)}
         </Badge>
       </CardContent>
       <Separator />
