@@ -29,7 +29,7 @@ const clinicFormSchema = z.object({
     }),
 });
 
-export function FormClinic() {
+export default function FormClinic() {
   const form = useForm<z.infer<typeof clinicFormSchema>>({
     resolver: zodResolver(clinicFormSchema),
     defaultValues: {

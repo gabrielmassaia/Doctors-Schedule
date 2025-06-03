@@ -80,7 +80,10 @@ interface UpsertDoctorFormProps {
   };
 }
 
-export function UpsertDoctorForm({ onSuccess, doctor }: UpsertDoctorFormProps) {
+export default function UpsertDoctorForm({
+  onSuccess,
+  doctor,
+}: UpsertDoctorFormProps) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {

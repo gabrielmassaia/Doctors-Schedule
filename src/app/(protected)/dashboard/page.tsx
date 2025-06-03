@@ -3,7 +3,8 @@ import { redirect } from "next/navigation";
 
 import { auth } from "@/lib/auth";
 
-import { SignOutButton } from "./_components/sign-out-button";
+import SignOutButton from "./_components/sign-out-button";
+
 export default async function Dashboard() {
   const session = await auth.api.getSession({
     headers: await headers(),

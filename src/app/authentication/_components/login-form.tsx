@@ -26,7 +26,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { authClient } from "@/lib/auth-client";
 
-export function LoginForm() {
+export default function LoginForm() {
   const router = useRouter();
 
   const loginSchema = z.object({
