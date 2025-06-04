@@ -1,3 +1,5 @@
+"use client";
+
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import { useAction } from "next-safe-action/hooks";
@@ -33,6 +35,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { doctorsTable } from "@/db/schema";
 
 import { medicalSpecialties } from "../_constants";
 
@@ -72,31 +75,28 @@ const formSchema = z
   );
 
 interface UpsertDoctorFormProps {
+  doctor?: typeof doctorsTable.$inferSelect;
   onSuccess?: () => void;
-  defaultValues?: z.infer<typeof formSchema>;
-  doctor?: {
-    id: string;
-    name: string;
-  };
 }
 
 export default function UpsertDoctorForm({
-  onSuccess,
   doctor,
+  onSuccess,
 }: UpsertDoctorFormProps) {
   const form = useForm<z.infer<typeof formSchema>>({
+    shouldUnregister: true,
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: "",
-      specialty: "",
-      appointmentPrice: 0,
-      availableFromWeekDay: "1",
-      availableToWeekDay: "5",
-      availableFromTime: "",
-      availableToTime: "",
+      name: doctor?.name ?? "",
+      specialty: doctor?.specialty ?? "",
+      appointmentPrice: doctor?.appointmentPriceInCents
+        ? doctor.appointmentPriceInCents / 100
+        : 0,
+      availableFromWeekDay: doctor?.availableFromWeekDay?.toString() ?? "1",
+      availableToWeekDay: doctor?.availableToWeekDay?.toString() ?? "5",
+      availableFromTime: doctor?.availableFromTime ?? "",
+      availableToTime: doctor?.availableToTime ?? "",
     },
-    mode: "all",
-    criteriaMode: "all",
   });
 
   const upsertDoctorAction = useAction(upsertDoctor, {
@@ -113,6 +113,7 @@ export default function UpsertDoctorForm({
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     upsertDoctorAction.execute({
       ...values,
+      id: doctor?.id,
       availableFromWeekDay: parseInt(values.availableFromWeekDay),
       availableToWeekDay: parseInt(values.availableToWeekDay),
       appointmentPriceInCents: values.appointmentPrice * 100,

@@ -35,12 +35,11 @@ export const upsertDoctor = actionClient
       headers: await headers(),
     });
     if (!session?.user) {
-      throw new Error("Usuário não autenticado");
+      throw new Error("Unauthorized");
     }
     if (!session?.user.clinic?.id) {
-      throw new Error("Clínica não encontrada");
+      throw new Error("Clinic not found");
     }
-
     await db
       .insert(doctorsTable)
       .values({
