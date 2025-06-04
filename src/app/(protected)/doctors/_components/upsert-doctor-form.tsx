@@ -1,14 +1,26 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2 } from "lucide-react";
+import { Loader2, TrashIcon } from "lucide-react";
 import { useAction } from "next-safe-action/hooks";
 import { useForm } from "react-hook-form";
 import { NumericFormat } from "react-number-format";
 import { toast } from "sonner";
 import z from "zod";
 
+import { deleteDoctor } from "@/actions/delete-doctor";
 import { upsertDoctor } from "@/actions/upsert-doctor";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import {
   DialogContent,
@@ -109,6 +121,25 @@ export default function UpsertDoctorForm({
       console.error(error);
     },
   });
+
+  const deleteDoctorAction = useAction(deleteDoctor, {
+    onSuccess: () => {
+      toast.success("Médico excluído com sucesso");
+      onSuccess?.();
+    },
+    onError: (error) => {
+      toast.error("Erro ao excluir médico");
+      console.error(error);
+    },
+  });
+
+  const handleDeleteDoctorClick = () => {
+    if (!doctor?.id) {
+      return;
+    }
+
+    deleteDoctorAction.execute({ id: doctor.id });
+  };
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     upsertDoctorAction.execute({
@@ -393,6 +424,32 @@ export default function UpsertDoctorForm({
             />
           </div>
           <DialogFooter>
+            {doctor && (
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button variant="outline">
+                    <TrashIcon className="h-4 w-4" /> Excluir Médico
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>
+                      Tem certeza que deseja excluir esse médico?
+                    </AlertDialogTitle>
+                    <AlertDialogDescription>
+                      Essa ação não pode ser desfeita. Isso irá excluir o médico
+                      e remover todos os seus dados.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                    <AlertDialogAction onClick={handleDeleteDoctorClick}>
+                      Excluir
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            )}
             <Button type="submit" disabled={upsertDoctorAction.isPending}>
               {upsertDoctorAction.isPending ? (
                 <Loader2 className="h-4 w-4 animate-spin" />

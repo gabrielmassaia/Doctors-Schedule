@@ -69,7 +69,7 @@ export default function DoctorCard({ doctor }: DoctorCardProps) {
           onOpenChange={setIsUpsertDoctorDialogOpen}
         >
           <DialogTrigger asChild>
-            <Button className="w-full">Ver detalhes</Button>
+            <Button className="w-full">Editar Cadastro</Button>
           </DialogTrigger>
           <UpsertDoctorForm
             doctor={{
