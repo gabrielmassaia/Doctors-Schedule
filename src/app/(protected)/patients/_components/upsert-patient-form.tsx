@@ -91,9 +91,22 @@ export default function UpsertPatientForm({
     }
   }, [isOpen, form]);
 
+  useEffect(() => {
+    if (patient && isOpen) {
+      form.reset({
+        name: patient.name,
+        email: patient.email,
+        phoneNumber: patient.phoneNumber,
+        sex: patient.sex,
+        status: patient.status,
+      });
+    }
+  }, [patient, form, isOpen]);
+
   const upsertPatientAction = useAction(upsertPatient, {
     onSuccess: () => {
       toast.success("Paciente salvo com sucesso");
+      form.reset();
       onSuccess?.();
     },
     onError: (error) => {
