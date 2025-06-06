@@ -36,6 +36,7 @@ export default function FormClinic() {
       name: "",
     },
   });
+
   async function onSubmit(data: z.infer<typeof clinicFormSchema>) {
     try {
       await createClinic(data.name);

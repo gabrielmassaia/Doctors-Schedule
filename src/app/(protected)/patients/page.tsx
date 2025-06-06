@@ -1,6 +1,7 @@
 import { eq } from "drizzle-orm";
 import { headers } from "next/headers";
 
+import { DataTable } from "@/components/ui/data-table";
 import {
   PageActions,
   PageContainer,
@@ -11,11 +12,10 @@ import {
   PageTitle,
 } from "@/components/ui/page-container";
 import { db } from "@/db";
-import { patientsTable } from "@/db/schema";
 import { auth } from "@/lib/auth";
 
 import AddPatientButton from "./_components/add-patient-button";
-import PatientCard from "./_components/patient-card";
+import { PatientsTableColumns } from "./_components/table-columns";
 
 export default async function PatientsPage() {
   const session = await auth.api.getSession({
@@ -26,10 +26,11 @@ export default async function PatientsPage() {
     throw new Error("Clinic not found");
   }
 
+  const clinicId = session.user.clinic.id;
+
   const patients = await db.query.patientsTable.findMany({
     where: (patients) =>
-      eq(patients.clinicId, session.user.clinic.id) &&
-      eq(patients.status, "active"),
+      eq(patients.clinicId, clinicId) && eq(patients.status, "active"),
   });
 
   return (
@@ -46,16 +47,7 @@ export default async function PatientsPage() {
         </PageActions>
       </PageHeader>
       <PageContent>
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {patients.map((patient) => (
-            <PatientCard key={patient.id} patient={patient} />
-          ))}
-          {patients.length === 0 && (
-            <p className="text-muted-foreground col-span-full text-center">
-              Nenhum paciente cadastrado.
-            </p>
-          )}
-        </div>
+        <DataTable columns={PatientsTableColumns} data={patients} />
       </PageContent>
     </PageContainer>
   );
