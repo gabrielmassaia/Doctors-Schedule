@@ -3,36 +3,41 @@
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
+import { z } from "zod";
 
 import { db } from "@/db";
 import { patientsTable } from "@/db/schema";
 import { auth } from "@/lib/auth";
 import { actionClient } from "@/lib/next-safe-action";
 
-import { deactivatePatientSchema } from "./schema";
-
-export const deactivatePatient = actionClient
-  .schema(deactivatePatientSchema)
+export const deletePatient = actionClient
+  .schema(
+    z.object({
+      id: z.string(),
+    }),
+  )
   .action(async ({ parsedInput }) => {
     const session = await auth.api.getSession({
       headers: await headers(),
     });
 
     if (!session?.user) {
-      throw new Error("Unauthorized");
+      throw new Error("Usuário não autenticado");
     }
 
-    if (!session?.user.clinic?.id) {
-      throw new Error("Clinic not found");
+    const patient = await db.query.patientsTable.findFirst({
+      where: eq(patientsTable.id, parsedInput.id),
+    });
+
+    if (!patient) {
+      throw new Error("Paciente não encontrado");
     }
 
-    await db
-      .update(patientsTable)
-      .set({
-        status: "inactive",
-        updatedAt: new Date(),
-      })
-      .where(eq(patientsTable.id, parsedInput.id));
+    if (patient.clinicId !== session.user.clinic?.id) {
+      throw new Error("Você não tem permissão para excluir este paciente");
+    }
+
+    await db.delete(patientsTable).where(eq(patientsTable.id, parsedInput.id));
 
     revalidatePath("/patients");
   });
