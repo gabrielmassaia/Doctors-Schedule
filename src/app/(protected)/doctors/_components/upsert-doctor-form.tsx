@@ -139,6 +139,8 @@ export default function UpsertDoctorForm({
     }
 
     deleteDoctorAction.execute({ id: doctor.id });
+    toast.success("Médico excluído com sucesso");
+    onSuccess?.();
   };
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {

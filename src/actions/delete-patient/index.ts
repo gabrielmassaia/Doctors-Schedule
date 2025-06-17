@@ -10,11 +10,10 @@ import { patientsTable } from "@/db/schema";
 import { auth } from "@/lib/auth";
 import { actionClient } from "@/lib/next-safe-action";
 
-export const togglePatientStatus = actionClient
+export const deletePatient = actionClient
   .schema(
     z.object({
       id: z.string(),
-      status: z.enum(["active", "inactive"]),
     }),
   )
   .action(async ({ parsedInput }) => {
@@ -35,16 +34,10 @@ export const togglePatientStatus = actionClient
     }
 
     if (patient.clinicId !== session.user.clinic?.id) {
-      throw new Error("Você não tem permissão para alterar este paciente");
+      throw new Error("Você não tem permissão para excluir este paciente");
     }
 
-    await db
-      .update(patientsTable)
-      .set({
-        status: parsedInput.status,
-        updatedAt: new Date(),
-      })
-      .where(eq(patientsTable.id, parsedInput.id));
+    await db.delete(patientsTable).where(eq(patientsTable.id, parsedInput.id));
 
     revalidatePath("/patients");
   });

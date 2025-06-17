@@ -1,9 +1,10 @@
-import { EditIcon, MoreVerticalIcon, TrashIcon } from "lucide-react";
+import { EditIcon, MoreVerticalIcon, PowerIcon, TrashIcon } from "lucide-react";
 import { useAction } from "next-safe-action/hooks";
 import { useState } from "react";
 import { toast } from "sonner";
 
-import { deletePatient } from "@/actions/deactivate-patient";
+import { togglePatientStatus } from "@/actions/deactivate-patient";
+import { deletePatient } from "@/actions/delete-patient";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -38,9 +39,24 @@ export default function PatientTableActions({
 }: PatientTableActionsProps) {
   const [upsertDialogIsOpen, setUpsertDialogIsOpen] = useState(false);
 
+  const toggleStatusAction = useAction(togglePatientStatus, {
+    onSuccess: () => {
+      toast.success(
+        `Paciente ${patient.status === "active" ? "inativado" : "ativado"} com sucesso`,
+      );
+    },
+    onError: (error) => {
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : "Erro ao alterar status do paciente",
+      );
+    },
+  });
+
   const deletePatientAction = useAction(deletePatient, {
     onSuccess: () => {
-      toast.success("Paciente excluído com sucesso");
+      toast.success("Paciente excluído permanentemente com sucesso");
     },
     onError: (error) => {
       toast.error(
@@ -49,10 +65,20 @@ export default function PatientTableActions({
     },
   });
 
-  const handleDeletePatient = () => {
+  const handleToggleStatus = () => {
+    if (!patient) return;
+    toggleStatusAction.execute({
+      id: patient.id,
+      status: patient.status === "active" ? "inactive" : "active",
+    });
+  };
+
+  const handleDelete = () => {
     if (!patient) return;
     deletePatientAction.execute({ id: patient.id });
   };
+
+  const isInactive = patient.status === "inactive";
 
   return (
     <>
@@ -69,29 +95,68 @@ export default function PatientTableActions({
             <DropdownMenuItem onClick={() => setUpsertDialogIsOpen(true)}>
               <EditIcon className="mr-2 h-4 w-4" /> Editar
             </DropdownMenuItem>
+            {isInactive ? (
+              <DropdownMenuItem onClick={handleToggleStatus}>
+                <PowerIcon className="mr-2 h-4 w-4" /> Ativar
+              </DropdownMenuItem>
+            ) : (
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                    <PowerIcon className="mr-2 h-4 w-4" /> Inativar
+                  </DropdownMenuItem>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>
+                      Tem certeza que deseja inativar esse paciente?
+                    </AlertDialogTitle>
+                    <AlertDialogDescription>
+                      O paciente será marcado como inativo e não aparecerá nas
+                      listagens por padrão. Você poderá reativá-lo
+                      posteriormente se necessário.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                    <AlertDialogAction
+                      onClick={handleToggleStatus}
+                      disabled={toggleStatusAction.status === "executing"}
+                    >
+                      Inativar
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            )}
             <AlertDialog>
               <AlertDialogTrigger asChild>
-                <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-                  <TrashIcon className="mr-2 h-4 w-4" /> Excluir
+                <DropdownMenuItem
+                  onSelect={(e) => e.preventDefault()}
+                  className="text-destructive"
+                >
+                  <TrashIcon className="mr-2 h-4 w-4" /> Excluir Permanentemente
                 </DropdownMenuItem>
               </AlertDialogTrigger>
               <AlertDialogContent>
                 <AlertDialogHeader>
                   <AlertDialogTitle>
-                    Tem certeza que deseja excluir esse paciente?
+                    Tem certeza que deseja excluir permanentemente esse
+                    paciente?
                   </AlertDialogTitle>
                   <AlertDialogDescription>
-                    Essa ação não pode ser revertida. Isso irá excluir o
-                    paciente permanentemente.
+                    Esta ação não pode ser desfeita. O paciente será excluído
+                    permanentemente do sistema, incluindo todo seu histórico.
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
                   <AlertDialogCancel>Cancelar</AlertDialogCancel>
                   <AlertDialogAction
-                    onClick={handleDeletePatient}
+                    onClick={handleDelete}
                     disabled={deletePatientAction.status === "executing"}
+                    className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
                   >
-                    Excluir
+                    Excluir Permanentemente
                   </AlertDialogAction>
                 </AlertDialogFooter>
               </AlertDialogContent>
