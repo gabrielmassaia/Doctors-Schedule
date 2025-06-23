@@ -21,7 +21,7 @@ export const deleteAppointment = actionClient
       headers: await headers(),
     });
     if (!session?.user) {
-      throw new Error("Unauthorized");
+      throw new Error("Não autorizado");
     }
     const appointment = await db.query.appointmentsTable.findFirst({
       where: eq(appointmentsTable.id, parsedInput.id),

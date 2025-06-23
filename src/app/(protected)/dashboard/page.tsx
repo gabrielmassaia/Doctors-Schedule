@@ -1,9 +1,16 @@
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
+import {
+  PageActions,
+  PageContainer,
+  PageContent,
+  PageDescription,
+  PageHeader,
+  PageHeaderContent,
+  PageTitle,
+} from "@/components/ui/page-container";
 import { auth } from "@/lib/auth";
-
-import SignOutButton from "./_components/sign-out-button";
 
 export default async function Dashboard() {
   const session = await auth.api.getSession({
@@ -18,12 +25,21 @@ export default async function Dashboard() {
   }
 
   return (
-    <div>
-      <h1>Dashboard</h1>
-      <h1>{session?.user?.email}</h1>
-      <h1>{session?.user?.name}</h1>
-
-      <SignOutButton />
-    </div>
+    <PageContainer>
+      <PageHeader>
+        <PageHeaderContent>
+          <PageTitle>Dashboard</PageTitle>
+          <PageDescription>
+            Verifique as informações da sua clínica
+          </PageDescription>
+        </PageHeaderContent>
+        <PageActions>
+          <></>
+        </PageActions>
+      </PageHeader>
+      <PageContent>
+        <></>
+      </PageContent>
+    </PageContainer>
   );
 }

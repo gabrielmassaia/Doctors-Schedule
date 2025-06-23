@@ -19,24 +19,24 @@ export const addAppointment = actionClient
       headers: await headers(),
     });
     if (!session?.user) {
-      throw new Error("Unauthorized");
+      throw new Error("Não autorizado");
     }
     if (!session?.user.clinic?.id) {
-      throw new Error("Clinic not found");
+      throw new Error("Clínica não encontrada");
     }
     const availableTimes = await getAvailableTimes({
       doctorId: parsedInput.doctorId,
       date: dayjs(parsedInput.date).format("YYYY-MM-DD"),
     });
     if (!availableTimes?.data) {
-      throw new Error("No available times");
+      throw new Error("Nenhum horário disponível");
     }
     const isTimeAvailable = availableTimes.data?.some(
       (time: { value: string; available: boolean }) =>
         time.value === parsedInput.time && time.available,
     );
     if (!isTimeAvailable) {
-      throw new Error("Time not available");
+      throw new Error("Horário não disponível");
     }
     const appointmentDateTime = dayjs(parsedInput.date)
       .set("hour", parseInt(parsedInput.time.split(":")[0]))

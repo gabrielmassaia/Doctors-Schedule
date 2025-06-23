@@ -18,11 +18,11 @@ export const upsertPatient = actionClient
     });
 
     if (!session?.user) {
-      throw new Error("Unauthorized");
+      throw new Error("Não autorizado");
     }
 
     if (!session?.user.clinic?.id) {
-      throw new Error("Clinic not found");
+      throw new Error("Clínica não encontrada");
     }
 
     await db

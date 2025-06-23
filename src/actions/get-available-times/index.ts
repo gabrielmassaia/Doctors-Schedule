@@ -28,7 +28,7 @@ export const getAvailableTimes = actionClient
       headers: await headers(),
     });
     if (!session) {
-      throw new Error("Unauthorized");
+      throw new Error("Não autorizado");
     }
     if (!session.user.clinic) {
       throw new Error("Clínica não encontrada");
