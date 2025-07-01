@@ -12,6 +12,8 @@ import {
 } from "@/components/ui/page-container";
 import { auth } from "@/lib/auth";
 
+import { DatePicker } from "./_components/date-picker";
+
 export default async function Dashboard() {
   const session = await auth.api.getSession({
     headers: await headers(),
@@ -34,7 +36,7 @@ export default async function Dashboard() {
           </PageDescription>
         </PageHeaderContent>
         <PageActions>
-          <></>
+          <DatePicker />
         </PageActions>
       </PageHeader>
       <PageContent>
