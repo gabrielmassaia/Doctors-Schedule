@@ -1,8 +1,13 @@
 import dayjs from "dayjs";
+import timezone from "dayjs/plugin/timezone";
+import utc from "dayjs/plugin/utc";
 import { and, count, desc, eq, gte, lte, sql, sum } from "drizzle-orm";
 
 import { db } from "@/db";
 import { appointmentsTable, doctorsTable, patientsTable } from "@/db/schema";
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 interface Params {
   from: string;
@@ -19,6 +24,9 @@ interface Params {
 export const getDashboard = async ({ from, to, session }: Params) => {
   const chartStartDate = dayjs().subtract(10, "days").startOf("day").toDate();
   const chartEndDate = dayjs().add(10, "days").endOf("day").toDate();
+  const tz = "America/Sao_Paulo";
+  const todayStart = dayjs().tz(tz).startOf("day").toDate();
+  const todayEnd = dayjs().tz(tz).endOf("day").toDate();
   const [
     [totalRevenue],
     [totalAppointments],
@@ -105,8 +113,8 @@ export const getDashboard = async ({ from, to, session }: Params) => {
     db.query.appointmentsTable.findMany({
       where: and(
         eq(appointmentsTable.clinicId, session.user.clinic.id),
-        gte(appointmentsTable.date, new Date()),
-        lte(appointmentsTable.date, new Date()),
+        gte(appointmentsTable.date, todayStart),
+        lte(appointmentsTable.date, todayEnd),
       ),
       with: {
         patient: true,
