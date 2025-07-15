@@ -164,6 +164,9 @@ const AddAppointmentForm = ({
 
   const isDateTimeEnabled = selectedPatientId && selectedDoctorId;
 
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
   return (
     <DialogContent className="sm:max-w-[500px]">
       <DialogHeader>
@@ -286,9 +289,11 @@ const AddAppointmentForm = ({
                       mode="single"
                       selected={field.value}
                       onSelect={field.onChange}
-                      disabled={(date) =>
-                        date < new Date() || !isDateAvailable(date)
-                      }
+                      disabled={(date) => {
+                        const compareDate = new Date(date);
+                        compareDate.setHours(0, 0, 0, 0);
+                        return compareDate < today || !isDateAvailable(date);
+                      }}
                       initialFocus
                     />
                   </PopoverContent>
@@ -315,15 +320,34 @@ const AddAppointmentForm = ({
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    {availableTimes?.data?.map((time) => (
-                      <SelectItem
-                        key={time.value}
-                        value={time.value}
-                        disabled={!time.available}
-                      >
-                        {time.label} {!time.available && "(Indisponível)"}
-                      </SelectItem>
-                    ))}
+                    {(availableTimes?.data ?? [])
+                      // Filtra horários se a data for hoje
+                      .filter((time) => {
+                        if (!selectedDate) return true;
+                        const isToday =
+                          dayjs(selectedDate).format("YYYY-MM-DD") ===
+                          dayjs().format("YYYY-MM-DD");
+                        if (!isToday) return true;
+                        // time.value deve estar no formato "HH:mm"
+                        const [hour, minute] = time.value
+                          .split(":")
+                          .map(Number);
+                        const now = dayjs();
+                        // Só permite horários futuros
+                        return (
+                          hour > now.hour() ||
+                          (hour === now.hour() && minute > now.minute())
+                        );
+                      })
+                      .map((time) => (
+                        <SelectItem
+                          key={time.value}
+                          value={time.value}
+                          disabled={!time.available}
+                        >
+                          {time.label} {!time.available && "(Indisponível)"}
+                        </SelectItem>
+                      ))}
                   </SelectContent>
                 </Select>
                 <FormMessage />
