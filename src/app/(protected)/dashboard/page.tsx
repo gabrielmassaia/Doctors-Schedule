@@ -44,9 +44,9 @@ const DashboardPage = async ({ searchParams }: DashboardPageProps) => {
 
   const { from, to } = await searchParams;
   if (!from || !to) {
-    redirect(
-      `/dashboard?from=${dayjs().format("YYYY-MM-DD")}&to=${dayjs().add(1, "month").format("YYYY-MM-DD")}`,
-    );
+    const startOfMonth = dayjs().startOf("month").format("YYYY-MM-DD");
+    const today = dayjs().format("YYYY-MM-DD");
+    redirect(`/dashboard?from=${startOfMonth}&to=${today}`);
   }
   const {
     totalRevenue,
@@ -90,7 +90,11 @@ const DashboardPage = async ({ searchParams }: DashboardPageProps) => {
           totalDoctors={totalDoctors.total}
         />
         <div className="grid grid-cols-[2.25fr_1fr] gap-4">
-          <AppointmentsChart dailyAppointmentsData={dailyAppointmentsData} />
+          <AppointmentsChart
+            dailyAppointmentsData={dailyAppointmentsData}
+            from={from}
+            to={to}
+          />
           <TopDoctors doctors={topDoctors} />
         </div>
         <div className="grid grid-cols-[2.25fr_1fr] gap-4">
