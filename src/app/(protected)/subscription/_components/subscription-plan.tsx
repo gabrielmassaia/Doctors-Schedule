@@ -2,10 +2,10 @@
 
 import { loadStripe } from "@stripe/stripe-js";
 import { CheckCircle2, Loader2 } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { useAction } from "next-safe-action/hooks";
 
 import { createStripeCheckout } from "@/actions/create-stripe-checkout";
+import { createStripePortalSession } from "@/actions/create-stripe-portal-session";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -13,15 +13,12 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 interface SubscriptionPlanProps {
   active?: boolean;
   className?: string;
-  userEmail: string;
 }
 
 export function SubscriptionPlan({
   active = false,
   className,
-  userEmail,
 }: SubscriptionPlanProps) {
-  const router = useRouter();
   const createStripeCheckoutAction = useAction(createStripeCheckout, {
     onSuccess: async ({ data }) => {
       if (!process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY) {
@@ -41,6 +38,13 @@ export function SubscriptionPlan({
       });
     },
   });
+  const createPortalSession = useAction(createStripePortalSession, {
+    onSuccess: ({ data }) => {
+      if (data?.url) {
+        window.location.href = data.url;
+      }
+    },
+  });
   const features = [
     "Cadastro de até 3 médicos",
     "Agendamentos ilimitados",
@@ -55,9 +59,7 @@ export function SubscriptionPlan({
   };
 
   const handleManagePlanClick = () => {
-    router.push(
-      `${process.env.NEXT_PUBLIC_STRIPE_CUSTOMER_PORTAL_URL}?prefilled_email=${userEmail}`,
-    );
+    createPortalSession.execute();
   };
 
   return (

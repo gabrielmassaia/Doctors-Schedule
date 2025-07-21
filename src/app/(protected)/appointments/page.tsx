@@ -1,7 +1,7 @@
 import { eq } from "drizzle-orm";
-import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
+import { requirePlan } from "@/_helpers/require-plan";
 import { DataTable } from "@/components/ui/data-table";
 import {
   PageActions,
@@ -14,15 +14,12 @@ import {
 } from "@/components/ui/page-container";
 import { db } from "@/db";
 import { appointmentsTable, doctorsTable, patientsTable } from "@/db/schema";
-import { auth } from "@/lib/auth";
 
 import AddAppointmentButton from "./_components/add-appointment-button";
 import { appointmentsTableColumns } from "./_components/table-columns";
 
 const AppointmentsPage = async () => {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
+  const session = await requirePlan();
   if (!session?.user) {
     redirect("/authentication");
   }

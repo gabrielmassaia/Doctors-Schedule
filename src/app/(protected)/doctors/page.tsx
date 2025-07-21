@@ -1,7 +1,7 @@
 import { eq } from "drizzle-orm";
-import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
+import { requirePlan } from "@/_helpers/require-plan";
 import {
   PageActions,
   PageContainer,
@@ -13,15 +13,12 @@ import {
 } from "@/components/ui/page-container";
 import { db } from "@/db";
 import { doctorsTable } from "@/db/schema";
-import { auth } from "@/lib/auth";
 
 import AddDoctorButton from "./_components/add-doctor-button";
 import DoctorCard from "./_components/doctor-card";
 
 export default async function DoctorsPage() {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
+  const session = await requirePlan();
 
   if (!session?.user) {
     redirect("/authentication");

@@ -1,6 +1,6 @@
 import { eq } from "drizzle-orm";
-import { headers } from "next/headers";
 
+import { requirePlan } from "@/_helpers/require-plan";
 import {
   PageActions,
   PageContainer,
@@ -11,24 +11,17 @@ import {
 } from "@/components/ui/page-container";
 import { db } from "@/db";
 import { patientsTable } from "@/db/schema";
-import { auth } from "@/lib/auth";
 
 import AddPatientButton from "./_components/add-patient-button";
 import { PatientsTable } from "./_components/patients-table";
 
 export default async function PatientsPage() {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
+  const session = await requirePlan();
 
   const clinicId = session?.user?.clinic?.id;
 
-  if (!clinicId) {
-    throw new Error("Clínica não encontrada");
-  }
-
   const patients = await db.query.patientsTable.findMany({
-    where: eq(patientsTable.clinicId, clinicId),
+    where: eq(patientsTable.clinicId, clinicId!),
     orderBy: (patients, { desc }) => [desc(patients.createdAt)],
   });
 
