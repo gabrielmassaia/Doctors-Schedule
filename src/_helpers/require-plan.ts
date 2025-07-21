@@ -14,7 +14,7 @@ export async function requirePlan() {
   }
 
   if (session.user.plan !== "essential") {
-    redirect("/subscription");
+    redirect("/signature");
   }
   return session;
 }
