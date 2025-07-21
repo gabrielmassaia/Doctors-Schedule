@@ -182,6 +182,8 @@ O projeto inclui diversos componentes pré-configurados:
 4. Faça push para a branch (`git push origin feature/AmazingFeature`)
 5. Abra um Pull Request
 
+Stripe test local -> stripe listen --forward-to localhost:3000/api/stripe/webhook
+
 ## Licença
 
 Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
