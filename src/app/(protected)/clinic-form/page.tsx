@@ -1,6 +1,6 @@
+import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
-import { requirePlan } from "@/_helpers/require-plan";
 import {
   Dialog,
   DialogContent,
@@ -8,13 +8,13 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { auth } from "@/lib/auth";
 
 import FormClinic from "./_components/form-clinic";
 
 export default async function ClinicFormPage() {
-  const session = await requirePlan();
-
-  if (!session?.user) {
+  const session = await auth.api.getSession({ headers: await headers() });
+  if (!session) {
     redirect("/authentication");
   }
 

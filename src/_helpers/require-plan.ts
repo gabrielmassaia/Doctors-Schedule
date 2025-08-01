@@ -6,10 +6,10 @@ import { auth } from "@/lib/auth";
 export async function requirePlan() {
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session) {
-    redirect("/login");
+    redirect("/authentication");
   }
 
-  if (!session.user.clinic) {
+  if (!session.user?.clinic) {
     redirect("/clinic-form");
   }
 

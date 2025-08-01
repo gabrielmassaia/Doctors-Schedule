@@ -12,5 +12,9 @@ export default async function Home() {
     redirect("/dashboard");
   }
 
+  if (!session?.user) {
+    redirect("/authentication");
+  }
+
   return <div>Hello!</div>;
 }
